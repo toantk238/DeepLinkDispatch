@@ -255,7 +255,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
         return getAllDeeplinkUrIsFromCustomDeepLinksOnElement(
             element = element,
             prefixesMap = prefixes
-        ) + (element.getAnnotation(DEEP_LINK_CLASS)?.value?.value?.toList() ?: emptyList())
+        ) + (element.getAnnotation(DEEP_LINK_CLASS)?.getAsStringList("value") ?: emptyList())
     }
 
     private fun verifyCass(classElement: XTypeElement) {
@@ -344,7 +344,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
         val deepLinkUriTemplate = DeepLinkUri.parseTemplate(uriTemplate)
         val templateHostPathSchemePlaceholders = deepLinkUriTemplate.schemeHostPathPlaceholders
         val annotatedPathParameterNames = allPathParameters.mapNotNull {
-            it.getAnnotation(DeeplinkParam::class)?.value?.name
+            it.getAnnotation(DeeplinkParam::class)?.getAsString("name")
         }.toSet()
         val annotatedPathParametersThatAreNotInUrlTemplate =
             annotatedPathParameterNames.filter { !templateHostPathSchemePlaceholders.contains(it) }
@@ -399,7 +399,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             }
             val prefix: Array<String> =
                 customAnnotationTypeElement.getAnnotation(DEEP_LINK_SPEC_CLASS)
-                    ?.let { it.value.prefix } ?: emptyArray()
+                    ?.getAsStringList("prefix")?.toTypedArray() ?: emptyArray()
             if (prefix.hasEmptyOrNullString()) {
                 logError(
                     element = customAnnotationTypeElement,

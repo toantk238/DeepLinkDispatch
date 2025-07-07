@@ -31,9 +31,31 @@ allprojects {
     }
 }
 
+// Configure Java toolchain for all projects
+subprojects {
+    afterEvaluate {
+        if (project.hasProperty("java")) {
+            java {
+                toolchain {
+                    languageVersion.set(JavaLanguageVersion.of(11))
+                }
+            }
+        }
+        if (project.hasProperty("android")) {
+            android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_11
+                    targetCompatibility JavaVersion.VERSION_11
+                }
+            }
+        }
+    }
+}
+
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         allWarningsAsErrors = true
+        jvmTarget = "11"
     }
 }
 
