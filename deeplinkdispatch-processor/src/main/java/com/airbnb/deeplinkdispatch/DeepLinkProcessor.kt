@@ -16,6 +16,7 @@
 package com.airbnb.deeplinkdispatch
 
 import androidx.room.compiler.processing.XAnnotation
+import androidx.room.compiler.processing.XAnnotationValue
 import androidx.room.compiler.processing.XElement
 import androidx.room.compiler.processing.XExecutableParameterElement
 import androidx.room.compiler.processing.XFiler
@@ -222,11 +223,13 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                         uri = uri,
                         element = element
                     )
+
                     element is XTypeElement && element.isActivity() ->
                         DeepLinkAnnotatedElement.ActivityAnnotatedElement(
                             uri = uri,
                             element = element
                         )
+
                     element is XTypeElement && element.isHandler() -> {
                         verifyHandlerMatchArgs(element, uri)
                         DeepLinkAnnotatedElement.HandlerAnnotatedElement(
@@ -234,6 +237,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                             element = element
                         )
                     }
+
                     else -> error(
                         "Internal error: Elements can only be 'MethodAnnotatedElement', " +
                             "'ActivityAnnotatedElement' or 'HandlerAnnotatedElement'"
@@ -263,9 +267,9 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             throw DeepLinkProcessorException(
                 element = classElement,
                 errorMessage =
-                "Only classes inheriting from either 'android.app.Activity' or public classes" +
-                    " implementing the '$deepLinkHandlerQName' interface can be annotated with" +
-                    " @DeepLink or another custom deep link annotation."
+                    "Only classes inheriting from either 'android.app.Activity' or public classes" +
+                        " implementing the '$deepLinkHandlerQName' interface can be annotated with" +
+                        " @DeepLink or another custom deep link annotation."
             )
         }
     }
@@ -378,8 +382,8 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             )
         }
         if (element.getAllMethods()
-            .filter { it.name == deepLinkHandlerHandleDeepLinkMethodName && it.parameters.size == 2 }
-            .count() != 1
+                .filter { it.name == deepLinkHandlerHandleDeepLinkMethodName && it.parameters.size == 2 }
+                .count() != 1
         ) {
             throw DeepLinkProcessorException(
                 element = element,
@@ -727,6 +731,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                                     ?: ""
                             )
                         )
+
                     is DeepLinkAnnotatedElement.MethodAnnotatedElement ->
                         urisTrie.addToTrie(
                             DeepLinkEntry.MethodDeeplinkEntry(
@@ -736,6 +741,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                                 method = element.method
                             )
                         )
+
                     is DeepLinkAnnotatedElement.HandlerAnnotatedElement ->
                         urisTrie.addToTrie(
                             DeepLinkEntry.HandlerDeepLinkEntry(
@@ -866,13 +872,13 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             prefixesMap: Map<XType, Array<String>>
         ): List<String> {
             return element.findAnnotatedAnnotation<DeepLinkSpec>().flatMap { customAnnotation ->
-                val suffixes = customAnnotation.getAsList<String>("value")
+                val suffixes = customAnnotation.getAsList<XAnnotationValue>("value")
                 val prefixes = prefixesMap[customAnnotation.type]
                     ?: throw DeepLinkProcessorException(
                         "Unable to find annotation '${customAnnotation.qualifiedName}' you must " +
                             "update 'deepLink.customAnnotations' within the build.gradle"
                     )
-                prefixes.flatMap { prefix -> suffixes.map { suffix -> prefix + suffix } }
+                prefixes.flatMap { prefix -> suffixes.map { suffix -> prefix + suffix.asString() } }
             }
         }
 

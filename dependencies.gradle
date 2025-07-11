@@ -5,16 +5,16 @@ def versions = [
     roboelectricVersion          : '4.9',
     benchmarkVersion             : '1.0.0',
     compileTestingVersion        : '1.5.0',
-    kspVersion                   : '2.0.21-1.0.28',
+    kspVersion                   : '2.0.21-1.0.25',
     xProcessorVersion            : '2.7.2',
     mockkVersion                 : '1.12.3',
-    ktlintGradlePluginVersion    : '3.8.0',
+    ktlintGradlePluginVersion    : '5.1.1',
     androidXTestingVersion       : '1.4.0'
 ]
 
 ext.versions = versions
 ext.androidConfig = [
-    agpVersion                          : '8.11.0',
+    agpVersion                          : '8.11.1',
     compileSdkVersion                   : 35,
     minSdkVersion                       : 16,
     targetSdkVersion                    : 35
