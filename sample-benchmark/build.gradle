@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.jmailen.kotlinter'
 
 android {
+    namespace 'com.airbnb.deeplinkdispatch.sample.benchmark'
     compileSdk androidConfig.compileSdkVersion
 
     defaultConfig {
@@ -23,7 +24,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 

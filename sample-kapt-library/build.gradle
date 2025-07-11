@@ -8,6 +8,7 @@ apply plugin: 'org.jmailen.kotlinter'
 // modules.
 
 android {
+    namespace 'com.airbnb.deeplinkdispatch.sample.kaptlibrary'
     compileSdk androidConfig.compileSdkVersion
 
     defaultConfig {
@@ -25,7 +26,7 @@ android {
   }
 
   kotlinOptions {
-    jvmTarget = "11"
+    jvmTarget = "17"
   }
 }
 

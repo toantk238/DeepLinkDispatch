@@ -37,15 +37,15 @@ subprojects {
         if (project.hasProperty("java")) {
             java {
                 toolchain {
-                    languageVersion.set(JavaLanguageVersion.of(11))
+                    languageVersion.set(JavaLanguageVersion.of(17))
                 }
             }
         }
         if (project.hasProperty("android")) {
             android {
                 compileOptions {
-                    sourceCompatibility JavaVersion.VERSION_11
-                    targetCompatibility JavaVersion.VERSION_11
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
                 }
             }
         }
@@ -55,7 +55,7 @@ subprojects {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         allWarningsAsErrors = true
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
