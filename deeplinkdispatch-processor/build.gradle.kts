@@ -1,15 +1,12 @@
 plugins {
     `java-library`
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.manadr.deps)
     id("checkstyle")
     // alias(libs.plugins.kotlinter)  // Disabled due to compatibility issues
 }
 
 apply(from = "../publishing.gradle")
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
 
 dependencies {
     implementation(project(":deeplinkdispatch-base"))
@@ -44,3 +41,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
         freeCompilerArgs += "-Xopt-in=androidx.room.compiler.processing.ExperimentalProcessingApi"
     }
 }
+
+kotlin { autoConfig() }
+setupCompileTask()

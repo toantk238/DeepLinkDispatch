@@ -1,17 +1,15 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.manadr.deps)
     // alias(libs.plugins.kotlinter)  // Disabled due to compatibility issues
 }
 
 android {
     namespace = "com.airbnb.deeplinkdispatch.sample.library"
-    compileSdk = 35
+    setupAndroidBasicConfigs()
 
     defaultConfig {
-        minSdk = 16
-        targetSdk = 35
-
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += mapOf(
@@ -29,3 +27,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit.junit)
 }
+
+kotlin { autoConfig() }
+setupCompileTask()

@@ -8,10 +8,6 @@ plugins {
 
 apply(from = "../publishing.gradle")
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
-
 dependencies {
     api(project(":deeplinkdispatch-base"))
     implementation(libs.squareup.okio)

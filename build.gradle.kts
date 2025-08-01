@@ -20,32 +20,32 @@ plugins {
 // Repositories are configured via settings.gradle.kts
 
 // Configure Java toolchain for all projects
-subprojects {
-    afterEvaluate {
-        if (project.hasProperty("java")) {
-            configure<JavaPluginExtension> {
-                toolchain {
-                    languageVersion.set(JavaLanguageVersion.of(17))
-                }
-            }
-        }
-        if (project.hasProperty("android")) {
-            configure<com.android.build.gradle.BaseExtension> {
-                compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_17
-                    targetCompatibility = JavaVersion.VERSION_17
-                }
-            }
-        }
-    }
-}
+//subprojects {
+//    afterEvaluate {
+//        if (project.hasProperty("java")) {
+//            configure<JavaPluginExtension> {
+//                toolchain {
+//                    languageVersion.set(JavaLanguageVersion.of(17))
+//                }
+//            }
+//        }
+//        if (project.hasProperty("android")) {
+//            configure<com.android.build.gradle.BaseExtension> {
+//                compileOptions {
+//                    sourceCompatibility = JavaVersion.VERSION_17
+//                    targetCompatibility = JavaVersion.VERSION_17
+//                }
+//            }
+//        }
+//    }
+//}
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        allWarningsAsErrors = true
-        jvmTarget = "17"
-    }
-}
+//tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+//    kotlinOptions {
+//        allWarningsAsErrors = true
+//        jvmTarget = "17"
+//    }
+//}
 
 fun getReleaseRepositoryUrl(): String {
     return if (hasProperty("RELEASE_REPOSITORY_URL")) {

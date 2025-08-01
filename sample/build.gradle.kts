@@ -3,6 +3,7 @@ plugins {
     id("checkstyle")
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.manadr.deps)
     // alias(libs.plugins.kotlinter)  // Disabled due to compatibility issues
 }
 
@@ -14,12 +15,10 @@ checkstyle {
 
 android {
     namespace = "com.airbnb.deeplinkdispatch.sample"
-    compileSdk = 35
+    setupAndroidBasicConfigs()
 
     defaultConfig {
         applicationId = "com.airbnb.deeplinkdispatch.sample"
-        minSdk = 16
-        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
@@ -41,10 +40,6 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    
     lint {
         disable.add("InvalidPackage")
     }
@@ -75,3 +70,6 @@ ksp {
             "com.airbnb.deeplinkdispatch.sample.library.LibraryDeepLink"
     )
 }
+
+kotlin { autoConfig() }
+setupCompileTask()

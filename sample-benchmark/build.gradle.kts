@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.manadr.deps)
     // alias(libs.plugins.kotlinter)  // Disabled due to compatibility issues
 }
 
@@ -8,12 +9,9 @@ apply(plugin = "androidx.benchmark")
 
 android {
     namespace = "com.airbnb.deeplinkdispatch.sample.benchmark"
-    compileSdk = 35
+    setupAndroidBasicConfigs()
 
     defaultConfig {
-        minSdk = 16
-        targetSdk = 35
-
         testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
     }
 
@@ -27,10 +25,6 @@ android {
                 "benchmark-proguard-rules.pro"
             )
         }
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
@@ -51,3 +45,6 @@ dependencies {
     androidTestImplementation("junit:junit:4.12")
     androidTestImplementation(libs.androidx.benchmark.junit4)
 }
+
+kotlin { autoConfig() }
+setupCompileTask()
