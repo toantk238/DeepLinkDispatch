@@ -5,19 +5,19 @@ androidDesugarJdkLibs = "2.1.5"
 # AGP and tools should be updated together
 androidGradlePlugin = "8.12.0"
 androidTools = "31.12.0"
-androidxAppCompat = "1.4.1"
+androidxAppCompat = "1.7.1"
 localBroadcastManager = "1.1.0"
-compileTesting = "1.5.0"
+compileTesting = "0.8.0"
 xProcessor = "2.7.2"
-ktlintGradlePlugin = "5.1.1"
-androidXTesting = "1.4.0"
-benchmark = "1.0.0"
+ktlintGradlePlugin = "5.2.0"
+androidXTesting = "1.7.0"
+benchmark = "1.4.0"
 javaPoet = "1.13.0"
-okio = "3.0.0"
-gradleMavenPublishPlugin = "0.22.0"
-dokka = "1.6.10"
-assertj = "3.22.0"
-autoCommon = "1.0"
+okio = "3.16.0"
+gradleMavenPublishPlugin = "0.34.0"
+dokka = "2.0.0"
+assertj = "3.27.3"
+autoCommon = "1.2.2"
 androidxComposeAlpha = "1.8.3"
 androidxComposeBom = "2025.06.01"
 androidxComposeMaterial3Adaptive = "1.1.0"
@@ -55,11 +55,11 @@ hilt = "2.56.2"
 hiltExt = "1.2.0"
 jacoco = "0.8.12"
 junit4 = "4.13.2"
-kotlin = "2.1.10"
+kotlin = "2.2.0"
 kotlinxCoroutines = "1.10.2"
-kotlinxDatetime = "0.7.0"
-kotlinxSerializationJson = "1.8.1"
-ksp = "2.1.10-1.0.31"
+kotlinxDatetime = "0.7.1"
+kotlinxSerializationJson = "1.9.0"
+ksp = "2.2.0-2.0.2"
 moduleGraph = "2.9.0"
 okhttp = "4.12.0"
 protobuf = "4.31.1"
@@ -473,8 +473,8 @@ androidx-room-compiler-processing = { group = "androidx.room", name = "room-comp
 kotlinter-gradle-plugin = { group = "org.jmailen.gradle", name = "kotlinter-gradle", version.ref = "ktlintGradlePlugin" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidXTesting" }
 assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
-kotlin-compile-testing = { group = "com.github.tschuchortdev", name = "kotlin-compile-testing", version.ref = "compileTesting" }
-kotlin-compile-testing-ksp = { group = "com.github.tschuchortdev", name = "kotlin-compile-testing-ksp", version.ref = "compileTesting" }
+kotlin-compile-testing = { group = "dev.zacsweers.kctfork", name = "core", version.ref = "compileTesting" }
+kotlin-compile-testing-ksp = { group = "dev.zacsweers.kctfork", name = "ksp", version.ref = "compileTesting" }
 google-android = { group = "com.google.android", name = "android", version = "4.1.1.4" }
 androidx-benchmark-junit4 = { group = "androidx.benchmark", name = "benchmark-junit4", version.ref = "benchmark" }
 androidx-benchmark-gradle-plugin = { group = "androidx.benchmark", name = "benchmark-gradle-plugin", version.ref = "benchmark" }

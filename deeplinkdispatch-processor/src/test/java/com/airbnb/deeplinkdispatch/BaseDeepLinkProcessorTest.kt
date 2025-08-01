@@ -1,15 +1,18 @@
 package com.airbnb.deeplinkdispatch
 
 import com.airbnb.deeplinkdispatch.test.Source
+import com.tschuchort.compiletesting.JvmCompilationResult
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.OptionName
 import com.tschuchort.compiletesting.OptionValue
-import com.tschuchort.compiletesting.kspArgs
+import com.tschuchort.compiletesting.configureKsp
+import com.tschuchort.compiletesting.kspProcessorOptions
 import com.tschuchort.compiletesting.kspSourcesDir
-import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.assertj.core.api.Assertions
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.File
 
+@OptIn(ExperimentalCompilerApi::class)
 open class BaseDeepLinkProcessorTest {
     @JvmField
     protected val fakeBaseDeeplinkDelegate = Source.KotlinSource(
@@ -102,8 +105,10 @@ open class BaseDeepLinkProcessorTest {
                     it.toKotlinSourceFile(sourcesDir)
                 }
                 if (useKsp) {
-                    symbolProcessorProviders = listOf(DeepLinkProcessorProvider())
-                    arguments?.let { kspArgs = arguments }
+                    configureKsp(useKsp2 = true) {
+                        symbolProcessorProviders += DeepLinkProcessorProvider()
+                    }
+                    arguments?.let { kspProcessorOptions = arguments }
                 } else {
                     annotationProcessors = listOf(DeepLinkProcessor())
                     arguments?.let { kaptArgs = arguments }
@@ -131,7 +136,8 @@ open class BaseDeepLinkProcessorTest {
                 arguments["deepLink.incremental"] = "true"
             }
             if (customDeepLinks.isNotEmpty()) {
-                arguments["deepLink.customAnnotations"] = customDeepLinks.joinToString(separator = "|")
+                arguments["deepLink.customAnnotations"] =
+                    customDeepLinks.joinToString(separator = "|")
             }
             return compile(
                 sourceFiles,
@@ -141,5 +147,9 @@ open class BaseDeepLinkProcessorTest {
         }
     }
 
-    class CompileResult(val result: KotlinCompilation.Result, val generatedFiles: Map<String, File>, val useKsp: Boolean)
+    class CompileResult(
+        val result: JvmCompilationResult,
+        val generatedFiles: Map<String, File>,
+        val useKsp: Boolean
+    )
 }

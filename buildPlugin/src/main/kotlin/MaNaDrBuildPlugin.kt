@@ -364,7 +364,12 @@ fun Project.setupCompileTask(javaVersion: String = globalJavaVersion) {
     tasks.withType(KotlinCompile::class.java) {
         compilerOptions {
             jvmTarget.value(JvmTarget.fromTarget(javaVersion))
-            freeCompilerArgs.addAll("-opt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs.addAll(
+                listOf(
+                    "-Xopt-in=kotlin.RequiresOptIn",
+                    "-Xopt-in=androidx.room.compiler.processing.ExperimentalProcessingApi"
+                )
+            )
         }
     }
 

@@ -34,13 +34,5 @@ checkstyle {
     configProperties = mapOf("checkstyle.cache.file" to rootProject.file("build/checkstyle.cache"))
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-        freeCompilerArgs += "-Xopt-in=androidx.room.compiler.processing.ExperimentalProcessingApi"
-    }
-}
-
 kotlin { autoConfig() }
 setupCompileTask()

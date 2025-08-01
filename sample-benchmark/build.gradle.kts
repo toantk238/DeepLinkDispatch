@@ -38,11 +38,11 @@ dependencies {
     implementation(project(":sample-benchmarkable-library"))
     implementation(project(":deeplinkdispatch"))
 
-    implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
-    androidTestImplementation("androidx.test:runner:1.2.0")
-    androidTestImplementation("androidx.test.ext:junit:1.1.1")
-    androidTestImplementation("junit:junit:4.12")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintLayout)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("junit:junit:4.13.2")
     androidTestImplementation(libs.androidx.benchmark.junit4)
 }
 

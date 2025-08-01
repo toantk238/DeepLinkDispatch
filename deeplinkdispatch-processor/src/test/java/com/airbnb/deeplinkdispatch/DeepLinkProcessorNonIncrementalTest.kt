@@ -3,8 +3,10 @@ package com.airbnb.deeplinkdispatch
 import com.airbnb.deeplinkdispatch.test.Source
 import com.tschuchort.compiletesting.KotlinCompilation
 import org.assertj.core.api.Assertions
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.Test
 
+@OptIn(ExperimentalCompilerApi::class)
 class DeepLinkProcessorNonIncrementalTest : BaseDeepLinkProcessorTest() {
     @Test
     fun testProcessor() {
