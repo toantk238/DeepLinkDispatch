@@ -28,11 +28,6 @@ gradlePlugin {
             id = "manadr.dependencies"
             implementationClass = "MaNaDrBuildPlugin"
         }
-
-        create("sonarQubeCommon") {
-            id = "manadr.sonarqube.common"
-            implementationClass = "SonarQubeBuildPlugin"
-        }
     }
 }
 

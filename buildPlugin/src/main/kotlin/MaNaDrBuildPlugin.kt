@@ -83,7 +83,7 @@ fun Project.getEnvMap(): Map<String, Bundle> {
 
 object AndroidBuildDeps {
 
-    const val MIN_SDK = 26
+    const val MIN_SDK = 16
 
     const val TARGET_SDK = 35
 

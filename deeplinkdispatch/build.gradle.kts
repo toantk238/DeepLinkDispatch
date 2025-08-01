@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.manadr.deps)
     id("checkstyle")
     // alias(libs.plugins.kotlinter)  // Disabled due to compatibility issues
 }
@@ -29,12 +30,11 @@ checkstyle {
 }
 
 android {
+    
+    setupAndroidBasicConfigs()
     namespace = "com.airbnb.android.deeplinkdispatch"
-    compileSdk = 35
 
     defaultConfig {
-        minSdk = 16
-        targetSdk = 35
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("proguard-rules.pro")
     }
@@ -42,13 +42,7 @@ android {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
-    
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
+
+kotlin { autoConfig() }
+setupCompileTask()
