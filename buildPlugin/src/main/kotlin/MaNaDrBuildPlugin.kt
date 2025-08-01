@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.com.google.gson.GsonBuilder
 import org.jetbrains.kotlin.com.google.gson.JsonElement
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask
@@ -83,7 +84,7 @@ fun Project.getEnvMap(): Map<String, Bundle> {
 
 object AndroidBuildDeps {
 
-    const val MIN_SDK = 16
+    const val MIN_SDK = 21
 
     const val TARGET_SDK = 35
 
@@ -344,6 +345,18 @@ fun KotlinSingleTargetExtension<*>.autoConfig(javaVersion: String = globalJavaVe
     }
 }
 
+fun KotlinAndroidProjectExtension.autoConfig(javaVersion: String = globalJavaVersion) {
+    compilerOptions {
+        jvmTarget.value(JvmTarget.fromTarget(javaVersion))
+        freeCompilerArgs.addAll(
+            listOf(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=androidx.room.compiler.processing.ExperimentalProcessingApi",
+            )
+        )
+    }
+}
+
 fun DependencyHandlerScope.applyDetektPlugins() {
     "detektPlugins".invoke(versionCatalog.takeLib("detekt.formatting"))
     "detektPlugins".invoke(versionCatalog.takeLib("compose.rules.detekt"))
@@ -361,13 +374,13 @@ fun DependencyHandlerScope.supportApi25() {
 }
 
 fun Project.setupCompileTask(javaVersion: String = globalJavaVersion) {
-    tasks.withType(KotlinCompile::class.java) {
+    tasks.withType<KotlinCompile> {
         compilerOptions {
             jvmTarget.value(JvmTarget.fromTarget(javaVersion))
             freeCompilerArgs.addAll(
                 listOf(
-                    "-Xopt-in=kotlin.RequiresOptIn",
-                    "-Xopt-in=androidx.room.compiler.processing.ExperimentalProcessingApi"
+                    "-opt-in=kotlin.RequiresOptIn",
+                    "-opt-in=androidx.room.compiler.processing.ExperimentalProcessingApi",
                 )
             )
         }

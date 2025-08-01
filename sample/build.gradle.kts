@@ -34,7 +34,7 @@ android {
         }
     }
     
-    packagingOptions {
+    packaging {
         resources {
             excludes += "META-INF/services/javax.annotation.processing.Processor"
         }
