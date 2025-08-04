@@ -22,13 +22,13 @@ This project has been updated to use Java 17 (previously Java 11):
 
 ```bash
 # Build entire project (recommended - works with Java 17)
-./gradlew assemble -x :sample:assemble -x :sample-benchmark:assemble -x lintKotlin -x lintKotlinMain -x lintKotlinTest
+./gradlew assemble -x :sample:assemble -x :sample-benchmark:assemble
 
 # Build core libraries only
 ./gradlew :deeplinkdispatch:assemble :deeplinkdispatch-base:assemble :deeplinkdispatch-processor:assemble
 
 # Run core library tests (working)
-./gradlew :deeplinkdispatch:test :deeplinkdispatch-base:test -x lintKotlin -x lintKotlinMain -x lintKotlinTest
+./gradlew :deeplinkdispatch:test :deeplinkdispatch-base:test
 
 # Run all tests (may have compatibility issues)
 ./gradlew test
