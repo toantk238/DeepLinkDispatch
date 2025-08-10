@@ -9,12 +9,9 @@ sealed class Source {
 
     class JavaSource(private val qName: String, override val contents: String) : Source() {
         override fun toKotlinSourceFile(srcRoot: File): SourceFile {
-            val outFile = srcRoot.resolve(qName.replace(".", "/") + ".java")
-                .also {
-                    it.parentFile.mkdirs()
-                    it.writeText(contents.trimIndent())
-                }
-            return SourceFile.fromPath(outFile)
+            // Create in-memory SourceFile instead of writing to disk
+            val fileName = qName.substringAfterLast(".") + ".java"
+            return SourceFile.java(fileName, contents.trimIndent())
         }
     }
 
@@ -24,11 +21,9 @@ sealed class Source {
     ) : Source() {
 
         override fun toKotlinSourceFile(srcRoot: File): SourceFile {
-            val outFile = srcRoot.resolve(relativePath).also {
-                it.parentFile.mkdirs()
-                it.writeText(contents.trimIndent())
-            }
-            return SourceFile.fromPath(outFile)
+            // Create in-memory SourceFile instead of writing to disk
+            val fileName = relativePath.substringAfterLast("/")
+            return SourceFile.kotlin(fileName, contents.trimIndent())
         }
     }
 }

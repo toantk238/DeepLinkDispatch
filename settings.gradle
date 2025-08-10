@@ -1,1 +1,0 @@
-include ':sample', ':deeplinkdispatch', ':deeplinkdispatch-base', ':deeplinkdispatch-processor', ':sample-library', ':sample-kapt-library',':sample-benchmarkable-library', ':sample-benchmark'
