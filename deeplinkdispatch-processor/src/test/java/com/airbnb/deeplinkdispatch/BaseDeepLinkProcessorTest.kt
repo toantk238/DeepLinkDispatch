@@ -6,8 +6,10 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.OptionName
 import com.tschuchort.compiletesting.OptionValue
 import com.tschuchort.compiletesting.configureKsp
+import com.tschuchort.compiletesting.kspIncremental
 import com.tschuchort.compiletesting.kspProcessorOptions
 import com.tschuchort.compiletesting.kspSourcesDir
+import com.tschuchort.compiletesting.kspWithCompilation
 import org.assertj.core.api.Assertions
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.File
@@ -108,9 +110,12 @@ open class BaseDeepLinkProcessorTest {
                     val temp = arguments?.map { it.key to it.value }?.toMap() ?: emptyMap()
                     configureKsp(useKsp2 = false) {
                         symbolProcessorProviders += DeepLinkProcessorProvider()
+                        languageVersion = "1.9"
                         processorOptions += temp
                     }
                     arguments?.let { kspProcessorOptions = arguments }
+                    kspIncremental = true
+                    kspWithCompilation = true
                 } else {
                     annotationProcessors = listOf(DeepLinkProcessor())
                     arguments?.let {

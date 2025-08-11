@@ -470,6 +470,7 @@ squareup-okio = { group = "com.squareup.okio", name = "okio", version.ref = "oki
 vanniktech-gradle-maven-publish-plugin = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "gradleMavenPublishPlugin" }
 jetbrains-dokka-gradle-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
 androidx-room-compiler-processing = { group = "androidx.room", name = "room-compiler-processing", version.ref = "xProcessor" }
+androidx-room-compiler-processing-testing = { group = "androidx.room", name = "room-compiler-processing-testing", version.ref = "xProcessor" }
 kotlinter-gradle-plugin = { group = "org.jmailen.gradle", name = "kotlinter-gradle", version.ref = "ktlintGradlePlugin" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidXTesting" }
 assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }

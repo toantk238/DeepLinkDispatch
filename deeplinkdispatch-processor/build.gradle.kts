@@ -19,6 +19,7 @@ dependencies {
     testImplementation(libs.junit.junit)
     testImplementation(libs.assertj.core)
     testImplementation(libs.google.android)
+    testImplementation(libs.androidx.room.compiler.processing.testing)
     // For test compile we need a reference of the DeepLinkDelegate (which has android dependencies)
     // Cannot depend on them from Maven as they are .aar and not .jar files (this is a java project)
     testImplementation(

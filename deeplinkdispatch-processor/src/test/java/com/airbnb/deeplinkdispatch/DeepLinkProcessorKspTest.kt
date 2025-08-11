@@ -193,17 +193,17 @@ class DeepLinkProcessorKspTest : BaseDeepLinkProcessorTest() {
             module, sampleActivityKotlin, fakeBaseDeeplinkDelegate
         )
         val results = listOf(
-            compileIncremental(
-                sourceFiles = sourceFiles,
-                customDeepLinks = listOf("com.example.AppDeepLink", "com.example.WebDeepLink"),
-                useKsp = false,
-            ),
 //            compileIncremental(
 //                sourceFiles = sourceFiles,
 //                customDeepLinks = listOf("com.example.AppDeepLink", "com.example.WebDeepLink"),
-//                useKsp = true,
-//                incrementalFlag = false
-//            )
+//                useKsp = false,
+//            ),
+            compileIncremental(
+                sourceFiles = sourceFiles,
+                customDeepLinks = listOf("com.example.AppDeepLink", "com.example.WebDeepLink"),
+                useKsp = true,
+                incrementalFlag = true
+            )
         )
         assertGeneratedCode(
             results = results,
