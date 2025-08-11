@@ -10,14 +10,11 @@ sealed class Source {
     class JavaSource(private val qName: String, override val contents: String) : Source() {
         override fun toKotlinSourceFile(srcRoot: File): SourceFile {
             println("srcRoot: $srcRoot")
-            // Create in-memory SourceFile instead of writing to disk
-            val fileName = qName.substringAfterLast(".") + ".java"
-            println("fileName: $fileName")
-            val outputFile = srcRoot.resolve(fileName)
-            outputFile.parentFile.mkdirs()
-            val outputName = outputFile.absolutePath
-            println("outputName: $outputName")
-            return SourceFile.java(outputFile.absolutePath, contents.trimIndent())
+            val relativePath = qName.replace(".", "/") + ".java"
+            val outFile = srcRoot.resolve(relativePath)
+                .also { it.parentFile.mkdirs() }
+            println("outFile: $outFile")
+            return SourceFile.java(relativePath, contents, true)
         }
     }
 
@@ -28,14 +25,11 @@ sealed class Source {
 
         override fun toKotlinSourceFile(srcRoot: File): SourceFile {
             println("srcRoot: $srcRoot")
-            // Create in-memory SourceFile instead of writing to disk
-            val fileName = relativePath.substringAfterLast("/")
-            println("fileName: $fileName")
-            val outputFile = srcRoot.resolve(fileName)
-            outputFile.parentFile.mkdirs()
-            val outputName = outputFile.absolutePath
-            println("outputName: $outputName")
-            return SourceFile.kotlin(outputFile.absolutePath, contents.trimIndent())
+            val outFile = srcRoot.resolve(relativePath).also {
+                it.parentFile.mkdirs()
+            }
+            println("outFile: $outFile")
+            return SourceFile.kotlin(relativePath, contents, true)
         }
     }
 }
