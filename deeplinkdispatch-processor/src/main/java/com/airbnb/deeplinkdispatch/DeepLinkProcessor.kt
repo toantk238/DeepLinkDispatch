@@ -45,6 +45,7 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import com.squareup.javapoet.WildcardTypeName
+import com.squareup.kotlinpoet.javapoet.KotlinPoetJavaPoetPreview
 import org.jetbrains.annotations.NotNull
 import java.io.IOException
 import java.lang.reflect.Type
@@ -106,14 +107,14 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
     }
 
     override fun getSupportedOptions(): Set<String> {
-        val supportedOptions = listOf(
+        val supportedOptions = listOfNotNull(
             Documentor.DOC_OUTPUT_PROPERTY_NAME,
             OPTION_CUSTOM_ANNOTATIONS,
             OPTION_INCREMENTAL,
             if (incrementalMetadata.incremental) {
                 "org.gradle.annotation.processing.aggregating"
             } else null
-        ).filterNotNull()
+        )
         return supportedOptions.toSet()
     }
 
@@ -469,6 +470,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
         return true
     }
 
+    @OptIn(KotlinPoetJavaPoetPreview::class)
     private fun createDeeplinkRegistries(
         roundEnv: XRoundEnv,
         annotatedClassElements: Set<XTypeElement>,

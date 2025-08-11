@@ -105,24 +105,32 @@ open class BaseDeepLinkProcessorTest {
                     it.toKotlinSourceFile(sourcesDir)
                 }
                 if (useKsp) {
-                    configureKsp(useKsp2 = true) {
+                    val temp = arguments?.map { it.key to it.value }?.toMap() ?: emptyMap()
+                    configureKsp(useKsp2 = false) {
                         symbolProcessorProviders += DeepLinkProcessorProvider()
+                        processorOptions += temp
                     }
                     arguments?.let { kspProcessorOptions = arguments }
                 } else {
                     annotationProcessors = listOf(DeepLinkProcessor())
-                    arguments?.let { kaptArgs = arguments }
+                    arguments?.let {
+                        kaptArgs = arguments
+                        useKapt4 = true
+                    }
                 }
                 inheritClassPath = true
                 messageOutputStream = System.out
             }
             val result = compilation.compile()
             val generatedSources = if (useKsp) {
+                println("ToanTK kspSourcesDir: ${compilation.kspSourcesDir}")
                 compilation.kspSourcesDir.walk().filter { it.isFile }.toList()
             } else {
+                println("ToanTK sourcesGeneratedByAnnotationProcessor: ${result.sourcesGeneratedByAnnotationProcessor}")
                 result.sourcesGeneratedByAnnotationProcessor
             }
-            return CompileResult(result, generatedSources.map { it.name to it }.toMap(), useKsp)
+            println("ToanTK kspSourcesDir: ${generatedSources}")
+            return CompileResult(result, generatedSources.associateBy { it.name }, useKsp)
         }
 
         internal fun compileIncremental(
