@@ -1,7 +1,11 @@
+@file:OptIn(KotlinPoetJavaPoetPreview::class)
+
 package com.airbnb.deeplinkdispatch
 
+import androidx.room.compiler.codegen.toJavaPoet
 import androidx.room.compiler.processing.XProcessingEnv
 import com.airbnb.deeplinkdispatch.Documentor.DocumetationWriter
+import com.squareup.kotlinpoet.javapoet.KotlinPoetJavaPoetPreview
 import java.io.PrintWriter
 import java.util.Locale
 
@@ -36,7 +40,7 @@ internal class MarkdownWriter : DocumetationWriter {
                 is DeepLinkAnnotatedElement.MethodAnnotatedElement -> element.method
                 else -> ""
             }
-            val simpleName = element.annotatedClass.className.reflectionName()
+            val simpleName = element.annotatedClass.asClassName().toJavaPoet().reflectionName()
             writer.println(
                 String.format(
                     Locale.US, format,

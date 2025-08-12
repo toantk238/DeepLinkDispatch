@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:OptIn(KotlinPoetJavaPoetPreview::class)
+
 package com.airbnb.deeplinkdispatch
 
+import androidx.room.compiler.codegen.toJavaPoet
 import androidx.room.compiler.processing.XAnnotation
 import androidx.room.compiler.processing.XAnnotationValue
 import androidx.room.compiler.processing.XElement
@@ -138,12 +141,10 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             } else {
                 annotations?.filterAnnotatedAnnotations(DeepLinkSpec::class) ?: emptySet()
             }
-            val allDeepLinkAnnotatedElements =
-                customAnnotations.ensureConsistentOrdering().flatMap {
-                    round.getElementsAnnotatedWith(it.qualifiedName)
-                        .ensureConsistentOrdering()
-                } +
-                    round.getElementsAnnotatedWith(DEEP_LINK_CLASS).ensureConsistentOrdering()
+            val allDeepLinkAnnotatedElements = (customAnnotations.flatMap {
+                round.getElementsAnnotatedWith(it.qualifiedName)
+            } + round.getElementsAnnotatedWith(DEEP_LINK_CLASS))
+                .ensureConsistentOrdering()
 
             val annotatedMethodElements =
                 allDeepLinkAnnotatedElements.filterIsInstance<XMethodElement>().toSet()
@@ -491,7 +492,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             tryCatchFileWriting {
                 generateDeepLinkRegistry(
                     packageName = deepLinkModuleElement.packageName,
-                    className = deepLinkModuleElement.className.simpleName(),
+                    className = deepLinkModuleElement.asClassName().toJavaPoet().simpleName(),
                     deepLinkElements = deepLinkElements,
                     originatingElements = annotatedClassElements + annotatedMethodElements + annotatedObjectElements + deepLinkModuleElement
                 )
@@ -734,7 +735,8 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                         urisTrie.addToTrie(
                             DeepLinkEntry.ActivityDeeplinkEntry(
                                 uriTemplate = uriTemplate,
-                                className = element.annotatedClass.className.reflectionName()
+                                className = element.annotatedClass.asClassName().toJavaPoet()
+                                    .reflectionName()
                                     ?: ""
                             )
                         )
@@ -743,7 +745,8 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                         urisTrie.addToTrie(
                             DeepLinkEntry.MethodDeeplinkEntry(
                                 uriTemplate = uriTemplate,
-                                className = element.annotatedClass.className.reflectionName()
+                                className = element.annotatedClass.asClassName().toJavaPoet()
+                                    .reflectionName()
                                     ?: "",
                                 method = element.method
                             )
@@ -753,7 +756,8 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                         urisTrie.addToTrie(
                             DeepLinkEntry.HandlerDeepLinkEntry(
                                 uriTemplate = uriTemplate,
-                                className = element.annotatedClass.className.reflectionName()
+                                className = element.annotatedClass.asClassName().toJavaPoet()
+                                    .reflectionName()
                                     ?: "",
                             )
                         )
@@ -904,19 +908,19 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             }.toSet()
 
         private fun moduleNameToRegistryName(element: XTypeElement) =
-            element.className.simpleName() + REGISTRY_CLASS_SUFFIX
+            element.asClassName().toJavaPoet().simpleName() + REGISTRY_CLASS_SUFFIX
 
         private fun moduleElementToRegistryClassName(element: XTypeElement): ClassName {
             return ClassName.get(
                 getPackage(element),
-                element.className.simpleName() + REGISTRY_CLASS_SUFFIX
+                element.asClassName().toJavaPoet().simpleName() + REGISTRY_CLASS_SUFFIX
             )
         }
 
         private fun moduleElementToRegistryKClassName(element: XTypeElement): com.squareup.kotlinpoet.ClassName {
             return com.squareup.kotlinpoet.ClassName(
                 getPackage(element),
-                element.className.simpleName() + REGISTRY_CLASS_SUFFIX
+                element.asClassName().toJavaPoet().simpleName() + REGISTRY_CLASS_SUFFIX
             )
         }
 

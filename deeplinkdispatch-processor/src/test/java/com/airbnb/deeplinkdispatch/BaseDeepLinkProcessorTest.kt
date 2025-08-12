@@ -6,7 +6,6 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.OptionName
 import com.tschuchort.compiletesting.OptionValue
 import com.tschuchort.compiletesting.configureKsp
-import com.tschuchort.compiletesting.kspIncremental
 import com.tschuchort.compiletesting.kspProcessorOptions
 import com.tschuchort.compiletesting.kspSourcesDir
 import com.tschuchort.compiletesting.kspWithCompilation
@@ -103,19 +102,20 @@ open class BaseDeepLinkProcessorTest {
         ): CompileResult {
             val compilation = KotlinCompilation().apply {
                 val sourcesDir = workingDir.resolve("sources")
+//                kotlincArguments = kotlincArguments + "-Xexplicit-api=strict"
                 sources = sourceFiles.map {
                     it.toKotlinSourceFile(sourcesDir)
                 }
                 if (useKsp) {
                     val temp = arguments?.map { it.key to it.value }?.toMap() ?: emptyMap()
-                    configureKsp(useKsp2 = true) {
+                    languageVersion = "1.9"
+                    configureKsp(useKsp2 = false) {
                         symbolProcessorProviders += DeepLinkProcessorProvider()
-                        languageVersion = "2.1"
                         processorOptions += temp
+                        incrementalLog = true
+                        withCompilation = true
                     }
                     arguments?.let { kspProcessorOptions = arguments }
-                    kspIncremental = true
-                    kspWithCompilation = true
                 } else {
                     annotationProcessors = listOf(DeepLinkProcessor())
                     arguments?.let {

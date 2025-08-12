@@ -37,7 +37,7 @@ internal class Documentor(private val processingEnv: XProcessingEnv) {
             )
             return
         }
-        if (elements.isNullOrEmpty()) {
+        if (elements.isEmpty()) {
             messager.printMessage(
                 Diagnostic.Kind.NOTE,
                 "No deep link, DeepLink doc not generated."

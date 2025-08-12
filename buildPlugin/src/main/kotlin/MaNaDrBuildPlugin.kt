@@ -345,17 +345,6 @@ fun KotlinSingleTargetExtension<*>.autoConfig(javaVersion: String = globalJavaVe
     }
 }
 
-fun KotlinAndroidProjectExtension.autoConfig(javaVersion: String = globalJavaVersion) {
-    compilerOptions {
-        jvmTarget.value(JvmTarget.fromTarget(javaVersion))
-        freeCompilerArgs.addAll(
-            listOf(
-                "-opt-in=kotlin.RequiresOptIn",
-                "-opt-in=androidx.room.compiler.processing.ExperimentalProcessingApi",
-            )
-        )
-    }
-}
 
 fun DependencyHandlerScope.applyDetektPlugins() {
     "detektPlugins".invoke(versionCatalog.takeLib("detekt.formatting"))
@@ -373,12 +362,30 @@ fun DependencyHandlerScope.supportApi25() {
     "coreLibraryDesugaring"(versionCatalog.takeLib("android.desugarJdkLibs"))
 }
 
+fun KotlinAndroidProjectExtension.autoConfig(javaVersion: String = globalJavaVersion) {
+    compilerOptions {
+        jvmTarget.value(JvmTarget.fromTarget(javaVersion))
+        freeCompilerArgs.addAll(
+            listOf(
+                "-opt-in=kotlin.contracts.ExperimentalContracts",
+                "-opt-in=com.squareup.kotlinpoet.javapoet.KotlinPoetJavaPoetPreview",
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=androidx.room.compiler.processing.ExperimentalProcessingApi",
+                "-opt-in=kotlin.ExperimentalUnsignedTypes",
+            )
+        )
+    }
+}
+
 fun Project.setupCompileTask(javaVersion: String = globalJavaVersion) {
     tasks.withType<KotlinCompile> {
         compilerOptions {
             jvmTarget.value(JvmTarget.fromTarget(javaVersion))
             freeCompilerArgs.addAll(
                 listOf(
+                    "-opt-in=kotlin.contracts.ExperimentalContracts",
+                    "-opt-in=com.squareup.kotlinpoet.javapoet.KotlinPoetJavaPoetPreview",
+                    "-opt-in=kotlin.ExperimentalUnsignedTypes",
                     "-opt-in=kotlin.RequiresOptIn",
                     "-opt-in=androidx.room.compiler.processing.ExperimentalProcessingApi",
                 )

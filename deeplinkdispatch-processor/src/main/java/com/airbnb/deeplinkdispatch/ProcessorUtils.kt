@@ -17,12 +17,12 @@ object ProcessorUtils {
     }
 
     @JvmStatic
-    fun Array<String>.hasEmptyOrNullString() = this.any { it.isNullOrEmpty() }
+    fun Array<String>.hasEmptyOrNullString() = this.any { it.isEmpty() }
 }
 
 fun XTypeElement.implementedInterfaces(): List<XTypeElement> {
     // Implemented interfaces of supertype (recursively)
-    return (superType?.typeElement?.implementedInterfaces() ?: emptyList()) +
+    return (superClass?.typeElement?.implementedInterfaces() ?: emptyList()) +
         // Implemented interface by this element
         getSuperInterfaceElements() +
         // Implemented interfaces the interfaces implemented by this type (recursively)
@@ -35,7 +35,7 @@ fun XTypeElement.implementsInterfaces(fqnList: List<String>) =
     }
 
 fun XTypeElement.inheritanceHierarchy(): List<XTypeElement> {
-    return this.superType?.typeElement?.let { it.inheritanceHierarchy() + listOf(it) }
+    return superClass?.typeElement?.let { it.inheritanceHierarchy() + listOf(it) }
         ?: emptyList()
 }
 
