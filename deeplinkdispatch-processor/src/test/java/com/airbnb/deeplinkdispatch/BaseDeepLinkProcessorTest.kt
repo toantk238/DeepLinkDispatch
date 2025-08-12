@@ -108,9 +108,9 @@ open class BaseDeepLinkProcessorTest {
                 }
                 if (useKsp) {
                     val temp = arguments?.map { it.key to it.value }?.toMap() ?: emptyMap()
-                    configureKsp(useKsp2 = false) {
+                    configureKsp(useKsp2 = true) {
                         symbolProcessorProviders += DeepLinkProcessorProvider()
-                        languageVersion = "1.9"
+                        languageVersion = "2.1"
                         processorOptions += temp
                     }
                     arguments?.let { kspProcessorOptions = arguments }

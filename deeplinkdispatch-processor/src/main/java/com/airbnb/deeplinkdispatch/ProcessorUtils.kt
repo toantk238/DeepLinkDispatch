@@ -1,9 +1,10 @@
 package com.airbnb.deeplinkdispatch
 
 import androidx.room.compiler.processing.XAnnotation
-import androidx.room.compiler.processing.XType
+import androidx.room.compiler.processing.XElement
 import androidx.room.compiler.processing.XTypeElement
-import androidx.room.compiler.processing.get
+import androidx.room.compiler.processing.isMethod
+import androidx.room.compiler.processing.isTypeElement
 
 object ProcessorUtils {
     @JvmStatic
@@ -64,3 +65,21 @@ inline fun <reified T> XAnnotation.getAsList(method: String): List<T> {
     }
 }
 
+/**
+ * The order of symbols returns by KSP2 differs from that returned by KSP1.
+ * This workaround ensure that the order of symbols is consistent across both KSP versions.
+ *
+ * @see [https://github.com/google/ksp/issues/1719]
+ * */
+internal fun <T : XElement> Collection<T>.ensureConsistentOrdering(): Sequence<T> {
+    return this.asSequence()
+        .sortedWith(
+            compareBy { element ->
+                when {
+                    element.isTypeElement() -> 0
+                    element.isMethod() -> 1
+                    else -> 2
+                }
+            }
+        )
+}

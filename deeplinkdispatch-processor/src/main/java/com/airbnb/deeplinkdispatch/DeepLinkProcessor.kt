@@ -139,8 +139,11 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                 annotations?.filterAnnotatedAnnotations(DeepLinkSpec::class) ?: emptySet()
             }
             val allDeepLinkAnnotatedElements =
-                customAnnotations.flatMap { round.getElementsAnnotatedWith(it.qualifiedName) } +
-                    round.getElementsAnnotatedWith(DEEP_LINK_CLASS)
+                customAnnotations.ensureConsistentOrdering().flatMap {
+                    round.getElementsAnnotatedWith(it.qualifiedName)
+                        .ensureConsistentOrdering()
+                } +
+                    round.getElementsAnnotatedWith(DEEP_LINK_CLASS).ensureConsistentOrdering()
 
             val annotatedMethodElements =
                 allDeepLinkAnnotatedElements.filterIsInstance<XMethodElement>().toSet()
@@ -152,7 +155,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                     .filter { it.isKotlinObject() }.toSet()
 
             verifyAnnotatedType(
-                allDeepLinkAnnotatedElements,
+                allDeepLinkAnnotatedElements.toList(),
                 annotatedClassElements,
                 annotatedObjectElements,
                 annotatedMethodElements,
@@ -395,7 +398,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
     }
 
     private fun customAnnotationPrefixes(customAnnotations: Set<XTypeElement>): Map<XType, Array<String>> {
-        return customAnnotations.map { customAnnotationTypeElement ->
+        return customAnnotations.associate { customAnnotationTypeElement ->
             if (!customAnnotationTypeElement.isAnnotationClass()) {
                 logError(
                     element = customAnnotationTypeElement,
@@ -416,7 +419,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                 message = "Prefix property cannot be empty"
             )
             customAnnotationTypeElement.type to prefix
-        }.toMap()
+        }
     }
 
     private fun verifyAnnotatedType(
@@ -440,6 +443,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
     private fun createDeeplinkDelegates(roundEnv: XRoundEnv): Boolean {
         val deeplinkHandlerAnnotatedElements =
             roundEnv.getElementsAnnotatedWith(DeepLinkHandler::class)
+                .ensureConsistentOrdering()
                 .filterIsInstance<XTypeElement>()
         val packagesWithMoreThanOneDeepLinkHandler =
             deeplinkHandlerAnnotatedElements.groupBy { it.packageName }.filter { it.value.size > 1 }
@@ -480,6 +484,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
     ) {
         val deepLinkModuleAnnotatedElements =
             roundEnv.getElementsAnnotatedWith(DeepLinkModule::class)
+                .ensureConsistentOrdering()
                 .filterIsInstance<XTypeElement>()
         validateAllowedPlaceholderValues(deepLinkElements)
         deepLinkModuleAnnotatedElements.forEach { deepLinkModuleElement ->
