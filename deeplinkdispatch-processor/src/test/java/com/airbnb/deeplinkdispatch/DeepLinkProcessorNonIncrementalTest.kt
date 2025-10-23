@@ -306,7 +306,7 @@ class DeepLinkProcessorNonIncrementalTest : BaseDeepLinkProcessorTest() {
                 useKsp = true
             )
         )
-        assertCompileError(resultsKsp, "[ksp] Unable to find annotation 'com.example.AppDeepLink' you must update 'deepLink.customAnnotations' within the build.gradle")
+        assertCompileError(resultsKsp, "[ksp] DeepLinkProcessorException: Unable to find annotation 'com.example.AppDeepLink' you must update 'deepLink.customAnnotations' within the build.gradle")
     }
 
     @Test
