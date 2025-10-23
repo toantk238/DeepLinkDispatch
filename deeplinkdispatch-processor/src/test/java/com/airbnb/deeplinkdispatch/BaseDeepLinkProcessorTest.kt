@@ -8,7 +8,6 @@ import com.tschuchort.compiletesting.OptionValue
 import com.tschuchort.compiletesting.configureKsp
 import com.tschuchort.compiletesting.kspProcessorOptions
 import com.tschuchort.compiletesting.kspSourcesDir
-import com.tschuchort.compiletesting.kspWithCompilation
 import org.assertj.core.api.Assertions
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.File
@@ -108,8 +107,7 @@ open class BaseDeepLinkProcessorTest {
                 }
                 if (useKsp) {
                     val temp = arguments?.map { it.key to it.value }?.toMap() ?: emptyMap()
-                    languageVersion = "1.9"
-                    configureKsp(useKsp2 = false) {
+                    configureKsp {
                         symbolProcessorProviders += DeepLinkProcessorProvider()
                         processorOptions += temp
                         incrementalLog = true
