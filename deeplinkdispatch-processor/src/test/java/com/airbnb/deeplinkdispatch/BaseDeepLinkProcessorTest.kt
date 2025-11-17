@@ -126,13 +126,10 @@ open class BaseDeepLinkProcessorTest {
             }
             val result = compilation.compile()
             val generatedSources = if (useKsp) {
-                println("ToanTK kspSourcesDir: ${compilation.kspSourcesDir}")
                 compilation.kspSourcesDir.walk().filter { it.isFile }.toList()
             } else {
-                println("ToanTK sourcesGeneratedByAnnotationProcessor: ${result.sourcesGeneratedByAnnotationProcessor}")
                 result.sourcesGeneratedByAnnotationProcessor
             }
-            println("ToanTK kspSourcesDir: ${generatedSources}")
             return CompileResult(result, generatedSources.associateBy { it.name }, useKsp)
         }
 

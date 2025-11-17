@@ -105,14 +105,14 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
     }
 
     override fun getSupportedOptions(): Set<String> {
-        val supportedOptions = listOf(
+        val supportedOptions = listOfNotNull(
             Documentor.DOC_OUTPUT_PROPERTY_NAME,
             OPTION_CUSTOM_ANNOTATIONS,
             OPTION_INCREMENTAL,
             if (incrementalMetadata.incremental) {
                 "org.gradle.annotation.processing.aggregating"
             } else null
-        ).filterNotNull()
+        )
         return supportedOptions.toSet()
     }
 
@@ -256,14 +256,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
         element: XElement,
         prefixes: Map<XType, Array<String>>
     ): List<String> {
-        // KSP2 compatibility: Add defensive error handling for annotation access
-        val stringList = try {
-            element.getAnnotation(DEEP_LINK_CLASS)?.getAsStringList("value")
-        } catch (e: Exception) {
-            // KSP2 workaround: Return null without logging error to avoid compilation failure
-            // This is a known KSP2 issue with PSI lifetime management
-            null
-        }
+        val stringList = element.getAnnotation(DEEP_LINK_CLASS)?.getAsStringList("value")
         val customUris = getAllDeeplinkUrIsFromCustomDeepLinksOnElement(element, prefixes)
 
         return customUris + (stringList ?: emptyList())
@@ -359,13 +352,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
         val deepLinkUriTemplate = DeepLinkUri.parseTemplate(uriTemplate)
         val templateHostPathSchemePlaceholders = deepLinkUriTemplate.schemeHostPathPlaceholders
         val annotatedPathParameterNames = allPathParameters.mapNotNull {
-            try {
-                it.getAnnotation(DeeplinkParam::class)?.getAsString("name")
-            } catch (e: Exception) {
-                // KSP2 workaround: Return null without logging error to avoid compilation failure
-                // This is a known KSP2 issue with PSI lifetime management
-                null
-            }
+            it.getAnnotation(DeeplinkParam::class)?.getAsString("name")
         }.toSet()
         val annotatedPathParametersThatAreNotInUrlTemplate =
             annotatedPathParameterNames.filter { !templateHostPathSchemePlaceholders.contains(it) }
@@ -382,13 +369,9 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
     private fun List<XExecutableParameterElement>.filterAnnotationType(
         deepLinkParamType: DeepLinkParamType
     ) = filter { param ->
-        // KSP2 compatibility: Add defensive error handling
-        val deeplinkAnn = try {
-            param.getAllAnnotations()
-                .firstOrNull { it.qualifiedName == DeeplinkParam::class.qualifiedName }
-        } catch (e: Exception) {
-            null
-        } ?: return@filter false
+        val deeplinkAnn = param.getAllAnnotations()
+            .firstOrNull { it.qualifiedName == DeeplinkParam::class.qualifiedName }
+            ?: return@filter false
 
         val enumArgValue = deeplinkAnn.annotationValues
             .firstOrNull { it.name == "type" }
@@ -449,16 +432,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                     continue
                 }
 
-                val prefix: Array<String> = annotation
-                    ?.let {
-                        try {
-                            it.getAsStringList("prefix").toTypedArray()
-                        } catch (e: Exception) {
-                            // KSP2 workaround: Use empty array if we can't access annotation values
-                            // Don't log error as it would fail the compilation
-                            emptyArray()
-                        }
-                    } ?: emptyArray()
+                val prefix = annotation?.getAsStringList("prefix")?.toTypedArray() ?: emptyArray()
 
                 if (prefix.hasEmptyOrNullString()) {
                     logError(
@@ -519,7 +493,8 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
         if (packagesWithMoreThanOneDeepLinkHandler.isNotEmpty()) {
             packagesWithMoreThanOneDeepLinkHandler.forEach { it ->
                 // Sort the qualified names to ensure deterministic error messages across KSP and KAPT
-                val sortedQualifiedNames = it.value.map { element -> element.qualifiedName }.sorted()
+                val sortedQualifiedNames =
+                    it.value.map { element -> element.qualifiedName }.sorted()
                 logError(
                     element = it.value.first().enclosingTypeElement,
                     message = "Only one @DeepLinkHandler annotated element allowed per package!" +
@@ -529,15 +504,9 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
             return false
         }
         deeplinkHandlerAnnotatedElements.forEach { deepLinkHandlerElement ->
-            // KSP2 compatibility: Add defensive error handling for annotation access
-            val deepLinkModuleElements = try {
-                deepLinkHandlerElement.getAnnotation(DeepLinkHandler::class)?.getAsTypeList("value")
-                    ?.map { it.typeElement!! }
-            } catch (e: Exception) {
-                // KSP2 workaround: Skip this handler without logging error to avoid compilation failure
-                // This is a known KSP2 issue with PSI lifetime management
-                null
-            }
+            val deepLinkModuleElements = deepLinkHandlerElement
+                .getAnnotation(DeepLinkHandler::class)?.getAsTypeList("value")
+                ?.map { it.typeElement!! }
             if (deepLinkModuleElements != null) {
                 tryCatchFileWriting {
                     generateDeepLinkDelegate(
@@ -783,14 +752,8 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
     }
 
     private fun logError(element: XElement?, message: String) {
-        // KSP2 compatibility: Handle potential lifetime exceptions when accessing element location
         if (element != null) {
-            try {
-                environment.messager.printMessage(Diagnostic.Kind.ERROR, message, element)
-            } catch (e: Exception) {
-                // If we can't access the element due to KSP2 lifetime issues, log without element
-                environment.messager.printMessage(Diagnostic.Kind.ERROR, "$message (element location unavailable due to KSP2 lifetime issue)")
-            }
+            environment.messager.printMessage(Diagnostic.Kind.ERROR, message, element)
         } else {
             environment.messager.printMessage(Diagnostic.Kind.ERROR, message)
         }
@@ -819,6 +782,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                                     ?: ""
                             )
                         )
+
                     is DeepLinkAnnotatedElement.MethodAnnotatedElement ->
                         urisTrie.addToTrie(
                             DeepLinkEntry.MethodDeeplinkEntry(
@@ -828,6 +792,7 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
                                 method = element.method
                             )
                         )
+
                     is DeepLinkAnnotatedElement.HandlerAnnotatedElement ->
                         urisTrie.addToTrie(
                             DeepLinkEntry.HandlerDeepLinkEntry(
@@ -950,46 +915,38 @@ class DeepLinkProcessor(symbolProcessorEnvironment: SymbolProcessorEnvironment? 
         const val REGISTRY_CLASS_SUFFIX = "Registry"
 
         /**
+         *
          * For the given element find all custom deeplink elements on it and build all possible
          * URIs that are supported by the set custom deeplinks.
          */
+
         private fun getAllDeeplinkUrIsFromCustomDeepLinksOnElement(
             element: XElement,
-            prefixesMap: Map<XType, Array<String>>
-        ): List<String> {
-            return element.findAnnotatedAnnotation<DeepLinkSpec>().flatMap { customAnnotation ->
-                val suffixes = customAnnotation.getAsStringList("value")
-                val prefixes = prefixesMap[customAnnotation.type]
-                    ?: throw DeepLinkProcessorException(
-                        "Unable to find annotation '${customAnnotation.qualifiedName}' you must " +
-                            "update 'deepLink.customAnnotations' within the build.gradle"
-                    )
+            prefixesMap: Map<XType, Array<String>>,
+        ): List<String> =
+            element.findAnnotatedAnnotation<DeepLinkSpec>().flatMap { customAnnotation ->
+                val suffixes = customAnnotation.getAsList<String>("value")
+                val prefixes =
+                    prefixesMap[customAnnotation.type]
+                        ?: throw DeepLinkProcessorException(
+                            "Unable to find annotation '${customAnnotation.qualifiedName}' you must " +
+                                "update 'deepLink.customAnnotations' within the build.gradle",
+                        )
                 prefixes.flatMap { prefix -> suffixes.map { suffix -> prefix + suffix } }
             }
-        }
 
         internal inline fun <reified T : Annotation> XElement.findAnnotatedAnnotation(): List<XAnnotation> {
-            // KSP2 compatibility: Add defensive error handling
-            return try {
-                getAllAnnotations().filter { annotation ->
-                    annotation.type.typeElement?.hasAnnotation(
-                        T::class
-                    ) == true
-                }
-            } catch (e: Exception) {
-                // Handle potential KSP2 lifetime exceptions
-                emptyList()
+            return getAllAnnotations().filter { annotation ->
+                annotation.type.typeElement?.hasAnnotation(
+                    T::class
+                ) == true
             }
         }
 
         private fun Set<XTypeElement>.filterAnnotatedAnnotations(klass: KClass<*>): Set<XTypeElement> =
             filter {
-                it.isAnnotationClass() && try {
+                it.isAnnotationClass() &&
                     it.getAllAnnotations().any { it.qualifiedName == klass.qualifiedName }
-                } catch (e: Exception) {
-                    // KSP2 compatibility: Handle potential lifetime exceptions
-                    false
-                }
             }.toSet()
 
         private fun moduleNameToRegistryName(element: XTypeElement) =
