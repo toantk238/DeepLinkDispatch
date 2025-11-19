@@ -3,10 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.manadr.deps)
     id("checkstyle")
+    id("com.vanniktech.maven.publish")
+    id("org.jetbrains.dokka")
     // alias(libs.plugins.kotlinter)  // Disabled due to compatibility issues
 }
-
-apply(from = "../publishing.gradle")
 
 dependencies {
     implementation(project(":deeplinkdispatch-base"))
@@ -61,5 +61,18 @@ tasks.test {
         "--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
         "--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
         "--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+    )
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+}
+mavenPublishing {
+    // Define coordinates for the published artifact
+    coordinates(
+        groupId = "com.airbnb",
+        artifactId = "deeplinkdispatch-processor",
     )
 }

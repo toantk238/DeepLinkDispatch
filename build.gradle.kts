@@ -14,7 +14,8 @@ plugins {
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.kotlinter) apply false
-    id("com.vanniktech.maven.publish") version "0.22.0" apply false
+    id("com.vanniktech.maven.publish") version "0.35.0" apply false
+    id("org.jetbrains.dokka") version "2.1.0" apply false
 }
 
 // Repositories are configured via settings.gradle.kts

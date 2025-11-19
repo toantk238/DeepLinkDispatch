@@ -23,6 +23,7 @@ import java.util.Map;
  * <p>Byte array format is:</p>
  * <hr/>
  * <table border="1">
+ * <caption>This is a caption describing the table content.</caption>
  * <tr>
  *   <td>Node's metadata flags</td>
  *   <td>value length</td>

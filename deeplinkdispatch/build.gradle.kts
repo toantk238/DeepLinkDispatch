@@ -3,10 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.manadr.deps)
     id("checkstyle")
+    id("com.vanniktech.maven.publish")
+    id("org.jetbrains.dokka")
     // alias(libs.plugins.kotlinter)  // Disabled due to compatibility issues
 }
-
-apply(from = "../publishing.gradle")
 
 dependencies {
     api(project(":deeplinkdispatch-base"))
@@ -26,7 +26,7 @@ checkstyle {
 }
 
 android {
-    
+
     setupAndroidBasicConfigs()
     namespace = "com.airbnb.android.deeplinkdispatch"
 
@@ -34,7 +34,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("proguard-rules.pro")
     }
-    
+
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
@@ -42,3 +42,16 @@ android {
 
 kotlin { autoConfig() }
 setupCompileTask()
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+}
+mavenPublishing {
+    // Define coordinates for the published artifact
+    coordinates(
+        groupId = "com.airbnb",
+        artifactId = "deeplinkdispatch",
+    )
+}

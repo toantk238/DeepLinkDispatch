@@ -111,6 +111,7 @@ open class BaseDeepLinkProcessorTest {
                         symbolProcessorProviders += DeepLinkProcessorProvider()
                         processorOptions += temp
                         incrementalLog = true
+                        incremental = true
                         withCompilation = true
                     }
                     arguments?.let { kspProcessorOptions = arguments }
